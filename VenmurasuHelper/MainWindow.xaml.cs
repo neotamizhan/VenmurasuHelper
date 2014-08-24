@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Web;
 
 namespace VenmurasuHelper
 {
@@ -31,12 +32,16 @@ namespace VenmurasuHelper
         private void btnParse_Click(object sender, RoutedEventArgs e)
         {
             var web = new HtmlWeb();
+            //web.OverrideEncoding = Encoding.Unicode;
+            web.AutoDetectEncoding = true;
             var html = web.Load(txtUrl.Text);
 
             //MessageBox.Show(html.ToString());            
             var doc = html.DocumentNode;
-
-            textBlock1.Text = doc.QuerySelector("h1.post-title").InnerText;
+            var sep = new char[] {'–'};
+            var title = doc.QuerySelector("h1.post-title").InnerText.Trim();
+            title = System.Net.WebUtility.HtmlDecode(title);
+            textBlock1.Text = string.Join(":::",title.Split(sep));// doc.QuerySelector("h1.post-title").InnerText;
         }
     }
 }
